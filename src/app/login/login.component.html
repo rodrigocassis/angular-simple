@@ -1,0 +1,49 @@
+<div class="container">
+
+
+      <div *ngIf="alert1" class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>success!</strong> login .
+        <button (click)="closeAlert1()" type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div *ngIf="alert2" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>oops!</strong> wrong credentials.
+        <button (click)="closeAlert2()" type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      
+          <div class="row mt-5">
+            <div class="col-6 col-12 col-sm-12 col-md-8 col-lg-6 mx-auto">
+              <div class="card mx-auto">
+                <div class="card-header text-center">
+                  <h4>Login</h4>
+                </div>
+                <div class="card-body">
+                  <form #loginForm='ngForm' (ngSubmit)="onLogin(loginForm)">
+                    <div class="form-group col-12">
+                      <label >Email</label>
+                      <input type="email" ngModel #email="ngModel"  email="true" name="email" class="form-control" required>
+                      <div *ngIf="email.invalid && (email.dirty || email.touched)"
+                                  class="alert alert-danger">
+                                <div *ngIf="email.errors.email">
+                                  wrong email format.
+                                </div>
+                                
+
+                              </div>
+                    </div>
+                    <div class="form-group col-12">
+                      <label >Password</label>
+                      <input type="password" ngModel name="password" class="form-control" required>
+                    </div>
+                    <div class="form-group col-12 text-center">
+                      <button [disabled]="!loginForm.valid" type="submit" class="btn btn-success">Login</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+    </div>

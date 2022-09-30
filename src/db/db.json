@@ -1,0 +1,68 @@
+{
+  "restaurants": [
+    {
+      "name": "bbq misal",
+      "email": "kaartech",
+      "address": "Baner",
+      "id": 1
+    },
+    {
+      "name": "KFC",
+      "email": "kaartech",
+      "address": "pune",
+      "id": 2
+    },
+    {
+      "name": "absolute bbq",
+      "email": "kaartech",
+      "address": "pimpiri",
+      "id": 4
+    },
+    {
+      "name": "Joshi wada wale",
+      "email": "kaartech",
+      "address": "Akurdi",
+      "id": 5
+    },
+    {
+      "name": "PUBG cafe",
+      "email": "kaartech",
+      "address": "Rua Erato, 44",
+      "id": 6
+    },
+    {
+      "name": "Burger Bits",
+      "email": "bits@hotmail.com",
+      "address": "Rua Dom Pedro I, 98",
+      "id": 7
+    }
+  ],
+  "users": [
+    {
+      "name": "saif",
+      "email": "ansari@gmail.com",
+      "password": "123",
+      "id": 1
+    },
+    {
+      "name": "Saif",
+      "email": "h@gmail.com",
+      "password": "",
+      "id": 2
+    },
+    {
+      "name": "wacxs",
+      "email": "as",
+      "password": "qxsa",
+      "address": "qxas",
+      "id": 3
+    },
+    {
+      "name": "Mike Rumble",
+      "email": "mike@mail.com",
+      "password": "pwd",
+      "address": "pwd",
+      "id": 4
+    }
+  ]
+}
