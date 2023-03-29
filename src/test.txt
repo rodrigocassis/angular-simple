@@ -1,0 +1,34 @@
+const { apiPortalDeMassa } = require('./file-with-apiPortalDeMassa');
+const http = require('http');
+
+jest.mock('http', () => ({
+  Agent: jest.fn(),
+}));
+
+describe('apiPortalDeMassa', () => {
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
+  it('should resolve with response on successful agent creation', async () => {
+    const expectedResponse = 'response';
+
+    http.Agent.mockImplementation(() => ({
+      rejectUnauthorized: false,
+    }));
+
+    const result = await apiPortalDeMassa();
+
+    expect(http.Agent).toHaveBeenCalledWith({ rejectUnauthorized: false });
+    expect(result).toEqual(expectedResponse);
+  });
+
+  it('should reject with error on failed agent creation', async () => {
+    const expectedError = 'error';
+
+    http.Agent.mockImplementation(() => {
+      throw new Error(expectedError);
+    });
+
+    await expect(apiPortalDeMassa()).rejects.toEqual(new Error(expectedError));
+  });
