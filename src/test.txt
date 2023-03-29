@@ -1,34 +1,46 @@
-const { apiPortalDeMassa } = require('./file-with-apiPortalDeMassa');
 const http = require('http');
-
-jest.mock('http', () => ({
-  Agent: jest.fn(),
-}));
+const { apiPortalDeMassa } = require('./apiPortalDeMassa');
 
 describe('apiPortalDeMassa', () => {
-  afterEach(() => {
-    jest.resetAllMocks();
-  });
+  const mockResponse = { status: 200, data: { message: 'success' } };
 
-  it('should resolve with response on successful agent creation', async () => {
-    const expectedResponse = 'response';
-
-    http.Agent.mockImplementation(() => ({
-      rejectUnauthorized: false,
+  beforeAll(() => {
+    jest.spyOn(http, 'Agent').mockImplementation(() => ({
+      rejectUnauthorized: false
     }));
-
-    const result = await apiPortalDeMassa();
-
-    expect(http.Agent).toHaveBeenCalledWith({ rejectUnauthorized: false });
-    expect(result).toEqual(expectedResponse);
   });
 
-  it('should reject with error on failed agent creation', async () => {
-    const expectedError = 'error';
+  afterAll(() => {
+    jest.restoreAllMocks();
+  });
 
-    http.Agent.mockImplementation(() => {
-      throw new Error(expectedError);
+  it('deve resolver com a resposta da API', async () => {
+    const mockEvent = { /* ... */ };
+    const mockResolve = jest.fn();
+
+    const apiRequestMock = jest.spyOn(http, 'request').mockImplementation((options, callback) => {
+      callback(mockResponse);
+      return { end: jest.fn() };
     });
 
-    await expect(apiPortalDeMassa()).rejects.toEqual(new Error(expectedError));
+    await apiPortalDeMassa(mockEvent, mockResolve);
+
+    expect(apiRequestMock).toHaveBeenCalledTimes(1);
+    expect(mockResolve).toHaveBeenCalledWith(mockResponse.data);
   });
+
+  it('deve rejeitar em caso de erro na requisição', async () => {
+    const mockEvent = { /* ... */ };
+    const mockReject = jest.fn();
+
+    const apiRequestMock = jest.spyOn(http, 'request').mockImplementation((options, callback) => {
+      callback(new Error('API Error'));
+      return { end: jest.fn() };
+    });
+
+    await apiPortalDeMassa(mockEvent, undefined, mockReject);
+
+    expect(apiRequestMock).toHaveBeenCalledTimes(1);
+    expect(mockReject).toHaveBeenCalledWith('error');
+  });
+});
