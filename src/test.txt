@@ -1,5 +1,47 @@
-module.exports = {
-    testEnvironment: 'node',
-    testRegex: '.*\\.(test|spec)?\\.(js|tsx)$',
-    moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node']
-    };
+const { createDynamoDBClient, createTable } = require('./myModule');
+const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
+
+// Mock do DynamoDBClient
+jest.mock("@aws-sdk/client-dynamodb", () => {
+  return {
+    DynamoDBClient: jest.fn(() => ({
+      send: jest.fn(),
+    })),
+  };
+});
+
+describe("createDynamoDBClient()", () => {
+  test("deve criar uma instância do DynamoDBClient", () => {
+    const client = createDynamoDBClient();
+    expect(client).toBeInstanceOf(DynamoDBClient);
+  });
+});
+
+describe("createTable()", () => {
+  test("deve chamar a função send() com os parâmetros corretos", async () => {
+    const client = createDynamoDBClient();
+    const mockSend = jest.fn();
+    client.send = mockSend;
+
+    await createTable(client);
+
+    expect(mockSend).toHaveBeenCalledWith(expect.objectContaining({
+      AttributeDefinitions: [
+        {
+          AttributeName: 'nom_sgto_nego',
+          AttributeType: 'S'
+        }
+      ],
+      KeySchema: [
+        {
+          AttributeName: 'nom_sgto_nego',
+          KeyType: 'HASH'
+        }
+      ],
+      ProvisionedThroughput: {
+        ReadCapacityUnits: 1,
+        WriteCapacityUnits: 1
+      }
+    }));
+  });
+});
