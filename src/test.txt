@@ -1,47 +1,48 @@
-const { createDynamoDBClient, createTable } = require('./myModule');
-const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
+const { createDynamoDBClient, createTable } = require('./dynamodb');
 
-// Mock do DynamoDBClient
-jest.mock("@aws-sdk/client-dynamodb", () => {
-  return {
-    DynamoDBClient: jest.fn(() => ({
-      send: jest.fn(),
-    })),
-  };
-});
+describe('DynamoDB', () => {
+  describe('createDynamoDBClient', () => {
+    it('should return an instance of DynamoDBClient', () => {
+      const client = createDynamoDBClient();
+      expect(client instanceof DynamoDBClient).toBe(true);
+    });
 
-describe("createDynamoDBClient()", () => {
-  test("deve criar uma instância do DynamoDBClient", () => {
-    const client = createDynamoDBClient();
-    expect(client).toBeInstanceOf(DynamoDBClient);
+    it('should use the region and endpoint from config', () => {
+      const client = createDynamoDBClient();
+      expect(client.config.region).toBe(config.REGIAO);
+      expect(client.config.endpoint).toBe('http://localhost:8000');
+    });
   });
-});
 
-describe("createTable()", () => {
-  test("deve chamar a função send() com os parâmetros corretos", async () => {
-    const client = createDynamoDBClient();
-    const mockSend = jest.fn();
-    client.send = mockSend;
+  describe('createTable', () => {
+    it('should call client.send with the expected parameters', async () => {
+      const client = {
+        send: jest.fn().mockResolvedValue({}),
+      };
 
-    await createTable(client);
+      await createTable(client);
 
-    expect(mockSend).toHaveBeenCalledWith(expect.objectContaining({
-      AttributeDefinitions: [
-        {
-          AttributeName: 'nom_sgto_nego',
-          AttributeType: 'S'
-        }
-      ],
-      KeySchema: [
-        {
-          AttributeName: 'nom_sgto_nego',
-          KeyType: 'HASH'
-        }
-      ],
-      ProvisionedThroughput: {
-        ReadCapacityUnits: 1,
-        WriteCapacityUnits: 1
-      }
-    }));
+      const expectedParams = {
+        TableName: 'nome-da-tabela',
+        AttributeDefinitions: [
+          {
+            AttributeName: 'nom_sgto_nego',
+            AttributeType: 'S',
+          },
+        ],
+        KeySchema: [
+          {
+            AttributeName: 'nom_sgto_nego',
+            KeyType: 'HASH',
+          },
+        ],
+        ProvisionedThroughput: {
+          ReadCapacityUnits: 1,
+          WriteCapacityUnits: 1,
+        },
+      };
+
+      expect(client.send).toHaveBeenCalledWith(new CreateTableCommand(expectedParams));
+    });
   });
 });
