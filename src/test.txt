@@ -1,46 +1,5 @@
-const axios = require('axios');
-const http = require('http');
-const qs = require('qs');
-require('dotenv').config();
-
-// Mock axios and http modules
-jest.mock('axios');
-jest.mock('http');
-
-// Import the function to test
-const { apiPortalDeMassa } = require('./apiPortalDeMassa');
-
-describe('apiPortalDeMassa', () => {
-  it('should resolve with response data when successful', async () => {
-    // Define the expected response data
-    const expectedResponseData = [{ codigo: 4 }];
-
-    // Mock the axios response
-    axios.mockResolvedValueOnce({ data: expectedResponseData });
-
-    // Call the function being tested
-    const result = await apiPortalDeMassa();
-
-    // Expect the axios request to have been made with the correct configuration
-    expect(axios).toHaveBeenCalledWith({
-      method: 'post',
-      data: expectedResponseData,
-    });
-
-    // Expect the function to resolve with the expected response data
-    expect(result).toEqual(expectedResponseData);
-  });
-
-  it('should resolve with "error" when unsuccessful', async () => {
-    // Mock the http.Agent constructor to throw an error
-    http.Agent.mockImplementationOnce(() => {
-      throw new Error('Mocked error');
-    });
-
-    // Call the function being tested
-    const result = await apiPortalDeMassa();
-
-    // Expect the function to resolve with "error"
-    expect(result).toBe('error');
-  });
-});
+module.exports = {
+    testEnvironment: 'node',
+    testRegex: '.*\\.(test|spec)?\\.(js|tsx)$',
+    moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node']
+    };
